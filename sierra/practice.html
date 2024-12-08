@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Circular Progress Bar</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Progress Circle Container */
+        .progress-circle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        /* SVG Circle */
+        .progress-circle-svg {
+            transform: rotate(-90deg);
+            /* Rotate to start the progress from the top */
+        }
+
+        /* Percentage Inside Circle */
+        .percentage {
+            font-size: 1rem;
+            font-weight: 200;
+            color: #000;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Label Below the Circle */
+        .label {
+            margin-top: 15px;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .circle-background {
+            fill: none;
+            stroke: #e6e6e6;
+            stroke-width: 10;
+        }
+
+        .circle-progress {
+            fill: none;
+            stroke: url(#gradient);
+            /* Apply gradient */
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-dasharray: 340, 540;
+            /* Initially 0% progress */
+            transition: stroke-dasharray 0.3s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="progress-circle">
+        <svg class="progress-circle-svg" width="120" height="120" viewBox="0 0 120 120">
+            <!-- Gradient Definition -->
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color: #8a2be2; stop-opacity: 1" />
+                    <stop offset="100%" style="stop-color: #6495ed; stop-opacity: 1" />
+                </linearGradient>
+            </defs>
+            <!-- <circle class="circle-background" cx="60" cy="60" r="50"/> -->
+            <circle class="circle-progress" cx="60" cy="60" r="50" />
+        </svg>
+        <span class="percentage" id="percentage">0%</span>
+        <div class="label">Development</div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const percentageElement = document.getElementById("percentage");
+            const circleProgress = document.querySelector(".circle-progress");
+            const targetPercentage = 78; // Target percentage
+            let currentPercentage = 0;
+
+            // Animate the circle and percentage
+            const interval = setInterval(() => {
+                if (currentPercentage < targetPercentage) {
+                    currentPercentage++;
+                    percentageElement.textContent = `${currentPercentage}%`;
+
+                    // Update the stroke-dasharray to match the current percentage
+                    const strokeLength = 2 * Math.PI * 50; // Circumference of the circle
+                    const dashOffset = strokeLength - (strokeLength * currentPercentage) / 100;
+                    circleProgress.style.strokeDasharray = `${strokeLength}, ${strokeLength}`;
+                    circleProgress.style.strokeDashoffset = dashOffset;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 20); // Adjust speed (10ms per increment)
+        });
+    </script>
+</body>
+
+</html>
